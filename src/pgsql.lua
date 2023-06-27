@@ -66,7 +66,7 @@ local pg_mt = {
 
 }
 
-local setdbLogin = libpgsqllua.setdbLogin
+local setdbLogin = libpgsqllua.setdbLogin   -- save a reference to the original implementation from the C layer.
 
 function libpgsqllua.setdbLogin (...)
 

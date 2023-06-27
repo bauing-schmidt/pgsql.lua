@@ -104,4 +104,31 @@ function Test_lua:test_exec_anonymous ()
     
 end
 
+
+function Test_lua:test_exec_OIDs ()
+    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+
+    local flag, trace = pgconn:tracing (
+        function ()
+            local res = pgconn [[
+                
+                SELECT * FROM pg_catalog.pg_type ORDER BY oid ASC 
+
+            ]]
+
+            lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
+    
+            local tuples = res ()
+
+            -- lu.assertEquals (tuples [1][1], '7')
+            -- lu.assertEquals (tuples [1][2], '8')
+        end
+    )
+    
+    lu.assertTrue (flag)
+    print (trace)
+    
+end
+
+
 os.exit( lu.LuaUnit.run() )
