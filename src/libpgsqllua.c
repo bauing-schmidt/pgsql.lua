@@ -97,11 +97,19 @@ int l_PQexec(lua_State *L)
 
     ExecStatusType status = PQresultStatus(res);
 
-    lua_pushlightuserdata(L, res);
     lua_pushstring(L, PQresStatus(status));
+    lua_pushlightuserdata(L, res);
+
+    return 2;
+}
+
+int l_PQresultErrorMessage(lua_State *L)
+{
+    PGresult *res = (PGresult *)lua_touserdata(L, 1);
+
     lua_pushstring(L, PQresultErrorMessage(res));
 
-    return 3;
+    return 1;
 }
 
 int l_PQprint(lua_State *L)
@@ -126,16 +134,15 @@ int l_PQprint(lua_State *L)
 
     PQprint(fout, res, &opt);
 
-    fseek(fout, 0L, SEEK_END);
-    size_t sz = ftell(fout);
     rewind(fout);
 
     luaL_Buffer b;
 
     luaL_buffinit(L, &b);
 
-    for (int i = 0; i < sz; i++)
-        luaL_addchar(&b, fgetc(fout));
+    int c;
+    while ((c = fgetc(fout)) != EOF)
+        luaL_addchar(&b, c);
 
     luaL_pushresult(&b);
 
@@ -166,6 +173,7 @@ const struct luaL_Reg libpgsqllua[] = {
     {"exec", l_PQexec},
     {"print", l_PQprint},
     {"clear", l_PQclear},
+    {"resultErrorMessage", l_PQresultErrorMessage},
     {NULL, NULL} /* sentinel */
 };
 

@@ -8,7 +8,15 @@ local res_mt = {
     __tostring = function (pg_res)
         return libpgsqllua.print (pg_res.ud, true, true, true, false, false, true, '|', '', '')
     end,
-    __gc = function (pg_res) libpgsqllua.clear (pg_tbl.ud) end
+
+    __gc = function (pg_res) libpgsqllua.clear (pg_tbl.ud) end,
+
+    __index = {
+
+        resultErrorMessage = function (pg_res) return libpgsqllua.resultErrorMessage (pg_res.ud) end,
+        print = function (pg_res, ...) return libpgsqllua.print (pg_res.ud, ...) end,
+
+    }
 
 }
 
@@ -18,17 +26,15 @@ local pg_mt = {
         
     __call = function (pg_tbl, command) 
         
-        local ud, res, err = libpgsqllua.exec (pg_tbl.conn, command)
+        local status, res_ud = libpgsqllua.exec (pg_tbl.conn, command)
 
         local tbl = {
-            ud = ud,
-            status = res,
-            error_message = err
+            ud = res_ud,
         }
 
         setmetatable (tbl, res_mt)
 
-        return tbl
+        return status, tbl
     end,
 
     __index = {

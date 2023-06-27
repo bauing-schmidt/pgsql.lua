@@ -44,14 +44,14 @@ end
 function Test_lua:test_exec_simple ()
     local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
 
-    local res = pgconn [[
+    local status, res = pgconn [[
 
         select * from pdm.ccnode limit 100;
 
     ]]
 
-    lu.assertEquals (res.status, 'PGRES_TUPLES_OK')
-    lu.assertEquals (res.error_message, '')
+    lu.assertEquals (status, 'PGRES_TUPLES_OK')
+    lu.assertEquals (res:resultErrorMessage (), '')
     print (res)
     -- lu.assertEquals (tostring(res), '')
     
