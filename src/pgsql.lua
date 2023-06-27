@@ -11,7 +11,7 @@ local res_mt = {
 
     __gc = function (pg_res) libpgsqllua.clear (pg_tbl.ud); pg_tbl.ud = nil end,
 
-    __call = function (pg_res, r, c, usenames)
+    __call = function (pg_res, usenames)
 
         if usenames == nil then usenames = true end
 
@@ -23,6 +23,8 @@ local res_mt = {
         errorMessage = function (pg_res) return libpgsqllua.resultErrorMessage (pg_res.ud) end,
         print = function (pg_res, ...) return libpgsqllua.print (pg_res.ud, ...) end,
         status = function (pg_res) return libpgsqllua.resultStatus (pg_res.ud) end,
+        cmdStatus = function (pg_res) return libpgsqllua.cmdStatus (pg_res.ud) end,
+        cmdTuples = function (pg_res) return tonumber(libpgsqllua.cmdTuples (pg_res.ud)) end,
 
     }
 

@@ -129,6 +129,24 @@ int l_PQresultStatus(lua_State *L)
     return 1;
 }
 
+int l_PQcmdStatus(lua_State *L)
+{
+    PGresult *res = (PGresult *)lua_touserdata(L, 1);
+
+    lua_pushstring(L, PQcmdStatus(res));
+
+    return 1;
+}
+
+int l_PQcmdTuples(lua_State *L)
+{
+    PGresult *res = (PGresult *)lua_touserdata(L, 1);
+
+    lua_pushstring(L, PQcmdTuples(res));
+
+    return 1;
+}
+
 int l_PQprint(lua_State *L)
 {
 
@@ -321,6 +339,8 @@ const struct luaL_Reg libpgsqllua[] = {
     {"errorMessage", l_PQerrorMessage},
     {"resultErrorMessage", l_PQresultErrorMessage},
     {"resultStatus", l_PQresultStatus},
+    {"cmdStatus", l_PQcmdStatus},
+    {"cmdTuples", l_PQcmdTuples},
     {"tuples", l_tuples},
     {NULL, NULL} /* sentinel */
 };
