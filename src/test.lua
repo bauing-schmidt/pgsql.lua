@@ -50,10 +50,33 @@ function Test_lua:test_exec_simple ()
 
     ]]
 
+    lu.assertEquals (pgconn:errorMessage (), '')
     lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
-    lu.assertEquals (res:resultErrorMessage (), '')
+    lu.assertEquals (res:errorMessage (), '')
     print (res)
+    lu.assertEquals (res (), {})
     -- lu.assertEquals (tostring(res), '')
+    
+end
+
+
+function Test_lua:test_exec_anonymous ()
+    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+
+    local res = pgconn [[
+
+        select 3 + 4 as a, 8 as b;
+
+    ]]
+
+    
+    lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
+    
+    local tuples = res ()
+
+    lu.assertEquals (tuples [1].a, '7')
+    lu.assertEquals (tuples [1].b, '8')
+    
     
 end
 

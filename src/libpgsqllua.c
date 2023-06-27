@@ -88,6 +88,17 @@ int l_PQserverVersion(lua_State *L)
     return 1;
 }
 
+int l_PQerrorMessage(lua_State *L)
+{
+    PGconn *conn = (PGconn *)lua_touserdata(L, 1);
+
+    char *v = PQerrorMessage(conn);
+
+    lua_pushstring(L, v);
+
+    return 1;
+}
+
 int l_PQexec(lua_State *L)
 {
     PGconn *conn = (PGconn *)lua_touserdata(L, 1);
@@ -165,6 +176,44 @@ int l_PQclear(lua_State *L)
     PQclear(res);
 
     return 0;
+}
+
+int l_tuples(lua_State *L)
+{
+
+    PGresult *res = (PGresult *)lua_touserdata(L, 1);
+    int usenames = lua_toboolean(L, 2);
+
+    lua_newtable(L);
+
+    int ntuples = PQntuples(res);
+    int nfields = PQnfields(res);
+
+    char *v = NULL;
+
+    for (int r = 0; r < ntuples; r++)
+    {
+        lua_newtable(L);
+
+        for (int c = 0; c < nfields; c++)
+        {
+            if (PQgetisnull(res, r, c))
+            {
+                lua_pushnil(L);
+            }
+            else
+            {
+                v = PQgetvalue(res, r, c);
+                lua_pushstring(L, v);
+            }
+
+            usenames ? lua_setfield(L, -2, PQfname(res, c)) : lua_seti(L, -2, c + 1);
+        }
+
+        lua_seti(L, -2, r + 1);
+    }
+
+    return 1;
 }
 
 void enum_CONNECTION(lua_State *L)
@@ -269,8 +318,10 @@ const struct luaL_Reg libpgsqllua[] = {
     {"exec", l_PQexec},
     {"print", l_PQprint},
     {"clear", l_PQclear},
+    {"errorMessage", l_PQerrorMessage},
     {"resultErrorMessage", l_PQresultErrorMessage},
     {"resultStatus", l_PQresultStatus},
+    {"tuples", l_tuples},
     {NULL, NULL} /* sentinel */
 };
 

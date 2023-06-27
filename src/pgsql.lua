@@ -9,11 +9,18 @@ local res_mt = {
         return libpgsqllua.print (pg_res.ud, true, true, true, false, false, true, '|', '', '')
     end,
 
-    __gc = function (pg_res) libpgsqllua.clear (pg_tbl.ud) end,
+    __gc = function (pg_res) libpgsqllua.clear (pg_tbl.ud); pg_tbl.ud = nil end,
+
+    __call = function (pg_res, r, c, usenames)
+
+        if usenames == nil then usenames = true end
+
+        return libpgsqllua.tuples (pg_res.ud, usenames) 
+    end,
 
     __index = {
 
-        resultErrorMessage = function (pg_res) return libpgsqllua.resultErrorMessage (pg_res.ud) end,
+        errorMessage = function (pg_res) return libpgsqllua.resultErrorMessage (pg_res.ud) end,
         print = function (pg_res, ...) return libpgsqllua.print (pg_res.ud, ...) end,
         status = function (pg_res) return libpgsqllua.resultStatus (pg_res.ud) end,
 
@@ -23,7 +30,7 @@ local res_mt = {
 
 local pg_mt = {
 
-    __gc = function (pg_tbl) libpgsqllua.finish (pg_tbl.conn) end,
+    __gc = function (pg_tbl) libpgsqllua.finish (pg_tbl.conn); pg_tbl.conn = nil end,
         
     __call = function (pg_tbl, command) 
         
@@ -43,7 +50,7 @@ local pg_mt = {
         status = function (pg_tbl) return libpgsqllua.status (pg_tbl.conn) end,
         conninfo = function (pg_tbl) return libpgsqllua.conninfo (pg_tbl.conn) end,
         serverVersion = function (pg_tbl) return libpgsqllua.serverVersion (pg_tbl.conn) end,
-
+        errorMessage = function (pg_tbl) return libpgsqllua.errorMessage (pg_tbl.conn) end,
     }
 
 }
