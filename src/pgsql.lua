@@ -15,6 +15,7 @@ local res_mt = {
 
         resultErrorMessage = function (pg_res) return libpgsqllua.resultErrorMessage (pg_res.ud) end,
         print = function (pg_res, ...) return libpgsqllua.print (pg_res.ud, ...) end,
+        status = function (pg_res) return libpgsqllua.resultStatus (pg_res.ud) end,
 
     }
 
@@ -26,7 +27,7 @@ local pg_mt = {
         
     __call = function (pg_tbl, command) 
         
-        local status, res_ud = libpgsqllua.exec (pg_tbl.conn, command)
+        local res_ud = libpgsqllua.exec (pg_tbl.conn, command)
 
         local tbl = {
             ud = res_ud,
@@ -34,7 +35,7 @@ local pg_mt = {
 
         setmetatable (tbl, res_mt)
 
-        return status, tbl
+        return tbl
     end,
 
     __index = {

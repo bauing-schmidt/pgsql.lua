@@ -95,12 +95,9 @@ int l_PQexec(lua_State *L)
 
     PGresult *res = PQexec(conn, command);
 
-    ExecStatusType status = PQresultStatus(res);
-
-    lua_pushstring(L, PQresStatus(status));
     lua_pushlightuserdata(L, res);
 
-    return 2;
+    return 1;
 }
 
 int l_PQresultErrorMessage(lua_State *L)
@@ -108,6 +105,15 @@ int l_PQresultErrorMessage(lua_State *L)
     PGresult *res = (PGresult *)lua_touserdata(L, 1);
 
     lua_pushstring(L, PQresultErrorMessage(res));
+
+    return 1;
+}
+
+int l_PQresultStatus(lua_State *L)
+{
+    PGresult *res = (PGresult *)lua_touserdata(L, 1);
+
+    lua_pushinteger(L, PQresultStatus(res));
 
     return 1;
 }
@@ -161,7 +167,48 @@ int l_PQclear(lua_State *L)
     return 0;
 }
 
-void PQclear(PGresult *res);
+void enum_PGRES(lua_State *L)
+{
+    lua_newtable(L);
+
+    lua_pushinteger(L, PGRES_EMPTY_QUERY);
+    lua_setfield(L, -2, "EMPTY_QUERY");
+
+    lua_pushinteger(L, PGRES_COMMAND_OK);
+    lua_setfield(L, -2, "COMMAND_OK");
+
+    lua_pushinteger(L, PGRES_TUPLES_OK);
+    lua_setfield(L, -2, "TUPLES_OK");
+
+    lua_pushinteger(L, PGRES_COPY_OUT);
+    lua_setfield(L, -2, "COPY_OUT");
+
+    lua_pushinteger(L, PGRES_COPY_IN);
+    lua_setfield(L, -2, "COPY_IN");
+
+    lua_pushinteger(L, PGRES_BAD_RESPONSE);
+    lua_setfield(L, -2, "BAD_RESPONSE");
+
+    lua_pushinteger(L, PGRES_NONFATAL_ERROR);
+    lua_setfield(L, -2, "NONFATAL_ERROR");
+
+    lua_pushinteger(L, PGRES_FATAL_ERROR);
+    lua_setfield(L, -2, "FATAL_ERROR");
+
+    lua_pushinteger(L, PGRES_COPY_BOTH);
+    lua_setfield(L, -2, "COPY_BOTH");
+
+    lua_pushinteger(L, PGRES_SINGLE_TUPLE);
+    lua_setfield(L, -2, "SINGLE_TUPLE");
+
+    lua_pushinteger(L, PGRES_PIPELINE_SYNC);
+    lua_setfield(L, -2, "PIPELINE_SYNC");
+
+    lua_pushinteger(L, PGRES_PIPELINE_ABORTED);
+    lua_setfield(L, -2, "PIPELINE_ABORTED");
+
+    lua_setfield(L, -2, "PGRES");
+}
 
 const struct luaL_Reg libpgsqllua[] = {
     {"setdbLogin", l_PQsetdbLogin},
@@ -174,12 +221,15 @@ const struct luaL_Reg libpgsqllua[] = {
     {"print", l_PQprint},
     {"clear", l_PQclear},
     {"resultErrorMessage", l_PQresultErrorMessage},
+    {"resultStatus", l_PQresultStatus},
     {NULL, NULL} /* sentinel */
 };
 
 extern int luaopen_libpgsqllua(lua_State *L)
 {
     luaL_newlib(L, libpgsqllua);
+
+    enum_PGRES(L);
 
     return 1;
 }

@@ -10,7 +10,7 @@ function Test_lua:test_gc ()
 
 
     local mt = {
-        __gc = function (t) error 'garbage from tests' end,
+        __gc = function (t) print 'garbage from tests' end,
     }
 
     local o = { }
@@ -44,13 +44,13 @@ end
 function Test_lua:test_exec_simple ()
     local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
 
-    local status, res = pgconn [[
+    local res = pgconn [[
 
-        select * from pdm.ccnode limit 100;
+        select * from pdm.ccnode limit 10;
 
     ]]
 
-    lu.assertEquals (status, 'PGRES_TUPLES_OK')
+    lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
     lu.assertEquals (res:resultErrorMessage (), '')
     print (res)
     -- lu.assertEquals (tostring(res), '')
