@@ -65,19 +65,25 @@ end
 function Test_lua:test_exec_anonymous ()
     local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
 
-    local res = pgconn [[
+    local flag, trace = pgconn:tracing (
+        function ()
+            local res = pgconn [[
 
-        select 3 + 4, 8;
+                select 3 + 4, 8;
 
-    ]]
-    
-    lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
-    
-    local tuples = res (false)
+            ]]
 
-    lu.assertEquals (tuples [1][1], '7')
-    lu.assertEquals (tuples [1][2], '8')
+            lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
     
+            local tuples = res (false)
+
+            lu.assertEquals (tuples [1][1], '7')
+            lu.assertEquals (tuples [1][2], '8')
+        end
+    )
+    
+    lu.assertTrue (flag)
+    print (trace)
     
 end
 

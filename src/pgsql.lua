@@ -53,6 +53,11 @@ local pg_mt = {
         conninfo = function (pg_tbl) return libpgsqllua.conninfo (pg_tbl.conn) end,
         serverVersion = function (pg_tbl) return libpgsqllua.serverVersion (pg_tbl.conn) end,
         errorMessage = function (pg_tbl) return libpgsqllua.errorMessage (pg_tbl.conn) end,
+        tracing = function (pg_tbl, f, suppress, regress)
+            if suppress == nil then suppress = false end
+            if regress == nil then regress = false end
+            return libpgsqllua.tracing (pg_tbl.conn, suppress, regress, f)
+        end,
     }
 
 }

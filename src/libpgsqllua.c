@@ -186,6 +186,43 @@ int l_PQprint(lua_State *L)
     return 1;
 }
 
+int l_tracing(lua_State *L)
+{
+
+    PGconn *conn = (PGconn *)lua_touserdata(L, 1);
+
+    int flags = (lua_toboolean(L, 2) ? PQTRACE_SUPPRESS_TIMESTAMPS : 0) |
+                (lua_toboolean(L, 3) ? PQTRACE_REGRESS_MODE : 0);
+
+    FILE *fout = tmpfile();
+
+    PQtrace(conn, fout);
+
+    PQsetTraceFlags(conn, flags);
+
+    int ret = lua_pcall(L, 0, LUA_MULTRET, 0);
+
+    PQuntrace(conn);
+
+    lua_pushboolean(L, ret == LUA_OK);
+
+    rewind(fout);
+
+    luaL_Buffer b;
+
+    luaL_buffinit(L, &b);
+
+    int c;
+    while ((c = fgetc(fout)) != EOF)
+        luaL_addchar(&b, c);
+
+    luaL_pushresult(&b);
+
+    fclose(fout);
+
+    return 2;
+}
+
 int l_PQclear(lua_State *L)
 {
 
@@ -342,6 +379,7 @@ const struct luaL_Reg libpgsqllua[] = {
     {"cmdStatus", l_PQcmdStatus},
     {"cmdTuples", l_PQcmdTuples},
     {"tuples", l_tuples},
+    {"tracing", l_tracing},
     {NULL, NULL} /* sentinel */
 };
 
