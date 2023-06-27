@@ -11,11 +11,17 @@ local res_mt = {
 
     __gc = function (pg_res) libpgsqllua.clear (pg_tbl.ud); pg_tbl.ud = nil end,
 
-    __call = function (pg_res, usenames)
+    __call = function (pg_res, tbl)
+
+        if not tbl then tbl = {} end
+
+        local usenames = tbl.usenames
 
         if usenames == nil then usenames = true end
 
-        return libpgsqllua.tuples (pg_res.ud, usenames) 
+        print ('---------------', tbl)
+
+        return libpgsqllua.tuples (pg_res.ud, usenames, tbl.row, tbl.column)
     end,
 
     __index = {

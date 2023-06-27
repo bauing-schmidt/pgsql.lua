@@ -239,18 +239,45 @@ int l_tuples(lua_State *L)
     PGresult *res = (PGresult *)lua_touserdata(L, 1);
     int usenames = lua_toboolean(L, 2);
 
-    lua_newtable(L);
-
     int ntuples = PQntuples(res);
     int nfields = PQnfields(res);
-
+    int R = -1;
+    int C = -1;
     char *v = NULL;
 
-    for (int r = 0; r < ntuples; r++)
+    if (lua_isinteger(L, 3))
+    {
+        R = lua_tointeger(L, 3);
+        ntuples = ntuples < R ? ntuples : R;
+    }
+    else
+        R = 1;
+
+    if (lua_isstring(L, 4))
+    {
+        v = lua_tostring(L, 4);
+        C = PQfnumber(res, v) + 1;
+
+        lua_pop(L, 1);
+        lua_pushinteger(L, C);
+    }
+
+    if (lua_isinteger(L, 4))
+    {
+        C = lua_tointeger(L, 4);
+        nfields = nfields < C ? nfields : C;
+    }
+    else
+        C = 1;
+
+    lua_newtable(L);
+    v = NULL;
+
+    for (int r = R - 1; r < ntuples; r++)
     {
         lua_newtable(L);
 
-        for (int c = 0; c < nfields; c++)
+        for (int c = C - 1; c < nfields; c++)
         {
             if (PQgetisnull(res, r, c))
             {

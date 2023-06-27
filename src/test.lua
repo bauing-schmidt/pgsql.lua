@@ -62,6 +62,23 @@ function Test_lua:test_exec_simple ()
 end
 
 
+function Test_lua:test_exec_coord ()
+    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+
+    local res = pgconn [[
+
+        select * from pdm.ccnode limit 100;
+
+    ]]
+
+    
+    lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
+    
+    lu.assertEquals (res { row = 3, }, {})
+    -- lu.assertEquals (tostring(res), '')
+    
+end
+
 function Test_lua:test_exec_anonymous ()
     local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
 
@@ -75,7 +92,7 @@ function Test_lua:test_exec_anonymous ()
 
             lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
     
-            local tuples = res (false)
+            local tuples = res { usenames = false } 
 
             lu.assertEquals (tuples [1][1], '7')
             lu.assertEquals (tuples [1][2], '8')
