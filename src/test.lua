@@ -67,14 +67,14 @@ function Test_lua:test_exec_coord ()
 
     local res = pgconn [[
 
-        select * from pdm.ccnode limit 100;
+        select * from pdm.ccnode limit 1;
 
     ]]
 
     
     lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
     
-    lu.assertEquals (res { row = 3, }, {})
+    lu.assertEquals (res { row = 1, }, {})
     -- lu.assertEquals (tostring(res), '')
     
 end

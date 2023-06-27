@@ -19,8 +19,6 @@ local res_mt = {
 
         if usenames == nil then usenames = true end
 
-        print ('---------------', tbl)
-
         return libpgsqllua.tuples (pg_res.ud, usenames, tbl.row, tbl.column)
     end,
 
