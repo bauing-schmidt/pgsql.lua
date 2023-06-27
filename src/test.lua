@@ -22,7 +22,7 @@ end
 
 function Test_lua:test_connection_status ()
     local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
-    lu.assertEquals (pgconn:status (), 0)
+    lu.assertEquals (pgconn:status (), pgsql.CONNECTION.OK)
     
 end
 

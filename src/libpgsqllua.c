@@ -167,6 +167,55 @@ int l_PQclear(lua_State *L)
     return 0;
 }
 
+void enum_CONNECTION(lua_State *L)
+{
+    lua_newtable(L);
+
+    lua_pushinteger(L, CONNECTION_OK);
+    lua_setfield(L, -2, "OK");
+
+    lua_pushinteger(L, CONNECTION_BAD);
+    lua_setfield(L, -2, "BAD");
+
+    lua_pushinteger(L, CONNECTION_STARTED);
+    lua_setfield(L, -2, "STARTED");
+
+    lua_pushinteger(L, CONNECTION_MADE);
+    lua_setfield(L, -2, "MADE");
+
+    lua_pushinteger(L, CONNECTION_AWAITING_RESPONSE);
+    lua_setfield(L, -2, "AWAITING_RESPONSE");
+
+    lua_pushinteger(L, CONNECTION_AUTH_OK);
+    lua_setfield(L, -2, "AUTH_OK");
+
+    lua_pushinteger(L, CONNECTION_SETENV);
+    lua_setfield(L, -2, "SETENV");
+
+    lua_pushinteger(L, CONNECTION_SSL_STARTUP);
+    lua_setfield(L, -2, "SSL_STARTUP");
+
+    lua_pushinteger(L, CONNECTION_NEEDED);
+    lua_setfield(L, -2, "NEEDED");
+
+    lua_pushinteger(L, CONNECTION_CHECK_WRITABLE);
+    lua_setfield(L, -2, "CHECK_WRITABLE");
+
+    lua_pushinteger(L, CONNECTION_CONSUME);
+    lua_setfield(L, -2, "CONSUME");
+
+    lua_pushinteger(L, CONNECTION_GSS_STARTUP);
+    lua_setfield(L, -2, "GSS_STARTUP");
+
+    lua_pushinteger(L, CONNECTION_CHECK_TARGET);
+    lua_setfield(L, -2, "CHECK_TARGET");
+
+    lua_pushinteger(L, CONNECTION_CHECK_STANDBY);
+    lua_setfield(L, -2, "CHECK_STANDBY");
+
+    lua_setfield(L, -2, "CONNECTION");
+}
+
 void enum_PGRES(lua_State *L)
 {
     lua_newtable(L);
@@ -230,6 +279,7 @@ extern int luaopen_libpgsqllua(lua_State *L)
     luaL_newlib(L, libpgsqllua);
 
     enum_PGRES(L);
+    enum_CONNECTION(L);
 
     return 1;
 }
