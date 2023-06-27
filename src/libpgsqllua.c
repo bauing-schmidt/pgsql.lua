@@ -271,7 +271,6 @@ int l_tuples(lua_State *L)
         C = 1;
 
     lua_newtable(L);
-    v = NULL;
 
     for (int r = R - 1; r < ntuples; r++)
     {
