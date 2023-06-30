@@ -131,4 +131,29 @@ function Test_lua:test_exec_OIDs ()
 end
 
 
-os.exit( lu.LuaUnit.run() )
+-- os.exit( lu.LuaUnit.run() )
+
+local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+
+
+
+lu.assertEquals (pgconn:status (), pgsql.CONNECTION.OK)
+
+    local res = pgconn [[
+
+        --select * from ccnode limit 10;
+        -- SELECT server_location_number() self_location_number;
+        --select 1 where false;
+        -- SELECT * from replicationlog where serverlocation = server_location_number() AND transfertime IS NULL;
+        UPDATE replicationlog SET transfertime = NULL WHERE cchistoryid = 4000000873710;
+    ]]
+
+    
+
+-- lu.assertEquals (res:status (), pgsql.PGRES.TUPLES_OK)
+print 'hello'
+    
+lu.assertEquals (res {}, {})
+
+print 'finished'
+    
