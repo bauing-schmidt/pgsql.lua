@@ -6,7 +6,7 @@ linux:
 
 mingw:
 	cc -O2 -fPIC -Wall -shared -o libpgsqllua.dll libpgsqllua.c \
-		-I/c/Program\ Files/PostgreSQL/15/include -I/usr/local/include -L/c/Program\ Files/PostgreSQL/15/lib -L/usr/local/lib \
+		-I/c/Program\ Files/PostgreSQL/16/include -I/usr/local/include -L/c/Program\ Files/PostgreSQL/16/lib -L/usr/local/lib \
 		-llua54 -lpq
 
 macos:

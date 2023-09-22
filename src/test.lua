@@ -21,28 +21,28 @@ end
 
 
 function Test_lua:test_connection_status ()
-    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+    local pgconn = pgsql.setdbLogin ('localhost', '5437', 'pdmCC', 'pdm', 'devAdmin1')
     lu.assertEquals (pgconn:status (), pgsql.CONNECTION.OK)
     
 end
 
 
 function Test_lua:test_connection_info ()
-    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+    local pgconn = pgsql.setdbLogin ('localhost', '5437', 'pdmCC', 'pdm', 'devAdmin1')
     lu.assertEquals (pgconn:conninfo (), {})
     
 end
 
 
 function Test_lua:test_serverVersion ()
-    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+    local pgconn = pgsql.setdbLogin ('localhost', '5437', 'pdmCC', 'pdm', 'devAdmin1')
     lu.assertEquals (pgconn:serverVersion (), 150002)
     
 end
 
 
 function Test_lua:test_exec_simple ()
-    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+    local pgconn = pgsql.setdbLogin ('localhost', '5437', 'pdmCC', 'pdm', 'devAdmin1')
 
     local res = pgconn [[
 
@@ -63,7 +63,7 @@ end
 
 
 function Test_lua:test_exec_coord ()
-    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+    local pgconn = pgsql.setdbLogin ('localhost', '5437', 'pdmCC', 'pdm', 'devAdmin1')
 
     local res = pgconn [[
 
@@ -80,7 +80,7 @@ function Test_lua:test_exec_coord ()
 end
 
 function Test_lua:test_exec_anonymous ()
-    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+    local pgconn = pgsql.setdbLogin ('localhost', '5437', 'pdmCC', 'pdm', 'devAdmin1')
 
     local flag, trace = pgconn:tracing (
         function ()
@@ -106,7 +106,7 @@ end
 
 
 function Test_lua:test_exec_OIDs ()
-    local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+    local pgconn = pgsql.setdbLogin ('localhost', '5437', 'pdmCC', 'pdm', 'devAdmin1')
 
     local flag, trace = pgconn:tracing (
         function ()
@@ -130,10 +130,9 @@ function Test_lua:test_exec_OIDs ()
     
 end
 
+ os.exit( lu.LuaUnit.run() )
 
--- os.exit( lu.LuaUnit.run() )
-
-local pgconn = pgsql.setdbLogin ('localhost', '5436', 'pdmCC', 'pdm', 'devAdmin1')
+local pgconn = pgsql.setdbLogin ('localhost', '5437', 'pdmCC', 'pdm', 'devAdmin1')
 
 
 
