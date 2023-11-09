@@ -9,6 +9,11 @@ mingw:
 		-I/c/Program\ Files/PostgreSQL/16/include -I/usr/local/include -L/c/Program\ Files/PostgreSQL/16/lib -L/usr/local/lib \
 		-llua54 -lpq
 
+jenkins:
+	gcc -O2 -g -fPIC -Wall -shared -o libpgsqllua.dll libpgsqllua.c \
+		-I../../replication/pg/include -I/usr/local/include -L../../replication/pg/lib -L/usr/local/lib \
+		-llua54 -lpq
+
 macos:
 	cc -O2 -fPIC -Wall -shared -o libpgsqllua.dylib libpgsqllua.c -llua -lpg
 
