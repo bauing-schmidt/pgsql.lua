@@ -11,7 +11,7 @@ mingw:
 
 jenkins:
 	gcc -O2 -g -fPIC -Wall -shared -o libpgsqllua.dll libpgsqllua.c \
-		-I../../../pg/include -I/usr/local/include -L../../../pg/lib -L/usr/local/lib \
+		-I../../../vm-dependencies/postgresql/ucrt64/include -I/usr/local/include -L../../../vm-dependencies/postgresql/ucrt64/bin -L/usr/local/lib \
 		-llua54 -lpq
 
 macos:
